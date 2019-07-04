@@ -1,0 +1,25 @@
+var Request = require("request");
+
+var i;
+var z= 0;
+let l_adjective;
+let l_noun;
+
+for (i = 0; i < 11; i++,z++) { 
+
+Request.get("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=adjective&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=9mx75oogbcceqdhb2pn43pdgyjq68ow3sw37l81cc70e95rl3", (error, response, body) => {
+    if(error) {
+        return console.dir(error);        
+    }
+    //console.dir(JSON.parse(body).word);
+    l_adjective = JSON.parse(body).word;
+    Request.get("https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=9mx75oogbcceqdhb2pn43pdgyjq68ow3sw37l81cc70e95rl3", (error, response, body) => {
+        if(error) {
+            return console.dir(error);        
+        }
+        //console.dir(JSON.parse(body).word);
+        l_noun = JSON.parse(body).word;
+    console.log(l_adjective + ' ' + l_noun);
+});
+});
+}

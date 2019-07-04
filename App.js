@@ -1,29 +1,54 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstWord: "",
+      secondWord: ""
+    }
+  }
+
+  generateNames = () => {
+    fetch('https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=adjective&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=9mx75oogbcceqdhb2pn43pdgyjq68ow3sw37l81cc70e95rl3')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          firstWord: responseJson.word,
+        })
+      })
+      .then(() => {
+        fetch('https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&includePartOfSpeech=noun&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=9mx75oogbcceqdhb2pn43pdgyjq68ow3sw37l81cc70e95rl3')
+          .then((response) => response.json())
+          .then((responseJson) => {
+            this.setState({
+              secondWord: responseJson.word === "undefined" ? "Error:Try Again" : responseJson.word
+            })
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Text style={styles.title}>Random Name Generator</Text>
+        <Text style={styles.input}>{this.state.firstWord}</Text>
+        <Text style={styles.input}>{this.state.secondWord}</Text>
+        <TouchableOpacity style={styles.button} onPress={this.generateNames}>
+          <Text style={styles.buttonText}>Generate</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -34,16 +59,43 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#90AFC5',
   },
-  welcome: {
+  title: {
+    color: '#763626',
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 50
+  },
+  input: {
+    width: 250,
+    borderBottomWidth: 2,
+    borderBottomColor: '#763626',
+    padding: 0,
+    paddingLeft: 5,
+    marginBottom: 50,
+    fontWeight: "bold",
+    fontSize: 25
+  },
+  button: {
+    width: 300,
+    height: 40,
+    backgroundColor: '#763626',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.32,
+    shadowRadius: 5.46,
+
+    elevation: 9,
+  },
+  buttonText: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    fontWeight: 'bold',
+    color: 'white'
+  }
 });
