@@ -1,7 +1,7 @@
 
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Share, TouchableOpacity } from 'react-native';
 
 export default class App extends Component {
   constructor(props) {
@@ -35,7 +35,17 @@ export default class App extends Component {
       .catch((err) => {
         console.error(err);
       });
+  }
 
+  onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          this.state.firstWord + ' ' +this.state.secondWord,
+      });
+    } catch (error) {
+      alert(error.message);
+    }
 
 
   }
@@ -48,6 +58,9 @@ export default class App extends Component {
         <Text style={styles.input}>{this.state.secondWord}</Text>
         <TouchableOpacity style={styles.button} onPress={this.generateNames}>
           <Text style={styles.buttonText}>Generate</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={this.onShare}>
+          <Text style={styles.buttonText}>Share!</Text>
         </TouchableOpacity>
       </View>
     );
@@ -90,8 +103,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.32,
     shadowRadius: 5.46,
-
     elevation: 9,
+    margin:10
   },
   buttonText: {
     fontSize: 20,
